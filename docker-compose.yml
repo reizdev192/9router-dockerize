@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  9router:
+    build: .
+    container_name: 9router-pro-max
+    restart: unless-stopped
+    ports:
+      # Expose port ra máy chủ thật: "PortNgoài:PortTrong"
+      - "20128:20128"
+    env_file:
+      - .env.docker
+    volumes:
+      # Mount cấu hình db, combos, usage, logs... từ /root/.9router trong container 
+      # ra ngoài ở thư mục ./9router-data của Sếp
+      - ./9router-data:/root/.9router
+      
+      # Vì ENABLE_REQUEST_LOGS=true ghi xuống <repo>/logs/... (ở đây working dir là /app/logs)
+      # Để tránh mất log khi container chết, mount luôn thư mục này ra ngoài
+      - ./9router-logs:/app/logs
